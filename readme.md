@@ -79,7 +79,7 @@ This project was developed as part of a **technical assessment**, with a strong 
 ---
 
 ## 🗂 Project Structure
-
+```
 EMR-MAIN/
 ├── api/ # Vercel serverless API routes (Node.js)
 │ ├── appointments.js
@@ -100,7 +100,7 @@ EMR-MAIN/
 │ ├── types/
 │ └── App.tsx
 └── README.md
-
+```
 
 ---
 
@@ -125,6 +125,7 @@ Appointments
 Queue Display
 Patients
 Reports
+```
 
 🌐 Deployment Notes (Important)
 
@@ -140,9 +141,6 @@ Vercel primarily supports serverless Node.js functions and does not natively sup
 As a result:
 
 The FastAPI + PostgreSQL backend cannot be hosted directly on Vercel
-
 Live database data is not rendered in the deployed version
-
 All backend logic and database functionality has been fully verified locally
-
 If required, the application can be deployed on alternative platforms (e.g., Railway, Render, Fly.io, VPS) to provide a fully functional, database-backed live version.
