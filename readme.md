@@ -83,9 +83,13 @@ npm run dev
 ➡️ When running locally, the application successfully connects to PostgreSQL and displays live data across:
 
 Dashboard
+
 Appointments
+
 Queue Display
+
 Patients
+
 Reports
 
 
