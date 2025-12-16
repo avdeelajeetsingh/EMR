@@ -3,7 +3,9 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 export default async function handler(req, res) {
@@ -25,7 +27,10 @@ export default async function handler(req, res) {
 
     res.status(200).json(result.rows);
   } catch (err) {
-    console.error("DB ERROR:", err);
-    res.status(500).json({ error: "Database connection failed" });
+    console.error("POSTGRES ERROR:", err);
+    res.status(500).json({
+      error: "Database connection failed",
+      detail: err.message,
+    });
   }
 }
