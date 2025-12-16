@@ -3,13 +3,14 @@ import { randomUUID } from "crypto";
 
 export default async function handler(req, res) {
   try {
+    // ================= GET =================
     if (req.method === "GET") {
       const result = await pool.query(`
         SELECT
           id,
           name,
-          doctor_name AS "doctorName",
-          to_char(date, 'YYYY-MM-DD') AS date,
+          doctor_name AS "doctor_name",
+          date::text AS date,
           time,
           duration,
           status,
@@ -18,13 +19,15 @@ export default async function handler(req, res) {
         FROM appointments
         ORDER BY date, time
       `);
-      return res.json(result.rows);
+
+      return res.status(200).json(result.rows);
     }
 
+    // ================= POST =================
     if (req.method === "POST") {
       const {
         name,
-        doctorName,
+        doctorName,   // frontend sends this
         date,
         time,
         duration,
@@ -33,10 +36,23 @@ export default async function handler(req, res) {
         reason,
       } = req.body;
 
-      await pool.query(
-        `INSERT INTO appointments
-         (id, name, doctor_name, date, time, duration, status, mode, reason)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      const result = await pool.query(
+        `
+        INSERT INTO appointments
+          (id, name, doctor_name, date, time, duration, status, mode, reason)
+        VALUES
+          ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        RETURNING
+          id,
+          name,
+          doctor_name AS "doctor_name",
+          date::text AS date,
+          time,
+          duration,
+          status,
+          mode,
+          reason
+        `,
         [
           randomUUID(),
           name,
@@ -50,12 +66,13 @@ export default async function handler(req, res) {
         ]
       );
 
-      return res.json({ success: true });
+      // 🔥 RETURN CREATED ROW (important)
+      return res.status(201).json(result.rows[0]);
     }
 
-    res.status(405).end();
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Database error" });
+    return res.status(405).json({ error: "Method not allowed" });
+  } catch (err) {
+    console.error("Appointments API error:", err);
+    return res.status(500).json({ error: "Database error" });
   }
 }
