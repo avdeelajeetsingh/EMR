@@ -1,5 +1,6 @@
 // Vercel Serverless API (same-origin)
 const API_BASE = "";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 type AppointmentPayload = {
   patient_name: string;

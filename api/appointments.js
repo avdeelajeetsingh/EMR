@@ -1,36 +1,61 @@
-import pkg from "pg";
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+import { pool } from "./_db.js";
+import { randomUUID } from "crypto";
 
 export default async function handler(req, res) {
   try {
-    const result = await pool.query(`
-      SELECT
-        id,
+    if (req.method === "GET") {
+      const result = await pool.query(`
+        SELECT
+          id,
+          name,
+          doctor_name AS "doctorName",
+          to_char(date, 'YYYY-MM-DD') AS date,
+          time,
+          duration,
+          status,
+          mode,
+          reason
+        FROM appointments
+        ORDER BY date, time
+      `);
+      return res.json(result.rows);
+    }
+
+    if (req.method === "POST") {
+      const {
         name,
-        doctor_name AS "doctorName",
-        TO_CHAR(date, 'YYYY-MM-DD') AS date,
-        TO_CHAR(time, 'HH24:MI') AS time,
+        doctorName,
+        date,
+        time,
         duration,
         status,
         mode,
-        reason
-      FROM appointments
-      ORDER BY date, time
-    `);
+        reason,
+      } = req.body;
 
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error("POSTGRES ERROR:", err);
-    res.status(500).json({
-      error: "Database connection failed",
-      detail: err.message,
-    });
+      await pool.query(
+        `INSERT INTO appointments
+         (id, name, doctor_name, date, time, duration, status, mode, reason)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+        [
+          randomUUID(),
+          name,
+          doctorName,
+          date,
+          time,
+          duration,
+          status,
+          mode,
+          reason,
+        ]
+      );
+
+      return res.json({ success: true });
+    }
+
+    res.status(405).end();
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Database error" });
   }
 }
