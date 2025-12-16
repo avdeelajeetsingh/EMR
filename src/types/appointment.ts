@@ -1,19 +1,17 @@
 export type AppointmentStatus =
   | "Confirmed"
   | "Scheduled"
-  | "Upcoming"
-  | "Cancelled";
-
-export type AppointmentMode = "In-Person" | "Video" | "Phone";
+  | "Cancelled"
+  | "Completed";
 
 export interface Appointment {
   id: string;
   name: string;
+  doctorName: string;
   date: string;
   time: string;
   duration: number;
-  doctorName: string;
   status: AppointmentStatus;
-  mode: AppointmentMode;
-  reason?: string;
+  mode: string;
+  reason: string;
 }
