@@ -99,7 +99,9 @@ https://emr-seven-pi.vercel.app/
 ⚠️ Backend Limitation on Vercel
 
 Vercel primarily supports serverless Node.js functions and does not natively support long-running Python services (FastAPI) or persistent PostgreSQL connections.
+
 As a result:
+
 The FastAPI + PostgreSQL backend cannot be hosted directly on Vercel
 Live database data is not rendered in the deployed version
 All backend logic and database functionality has been fully verified locally
