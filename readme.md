@@ -59,25 +59,6 @@ This project was developed as part of a **technical assessment**, with a strong 
 
 ---
 
-## 🧱 Tech Stack
-
-### Frontend
-- **React (Vite)**
-- **TypeScript**
-- **Tailwind CSS**
-- Lucide Icons
-
-### Backend (Local Environment)
-- **Python (FastAPI)**
-- **PostgreSQL**
-- SQLAlchemy / psycopg2
-
-### Deployment
-- **Frontend:** Vercel
-- **Backend:** Local (FastAPI + PostgreSQL)
-
----
-
 ## 🗂 Project Structure
 ```
 EMR-MAIN/
@@ -106,7 +87,7 @@ EMR-MAIN/
 
 ## 🧪 Local Setup (Fully Functional)
 
-### 1️⃣ Backend (FastAPI + PostgreSQL)
+### 1️Backend (FastAPI + PostgreSQL)
 
 ```bash
 cd backend
@@ -114,9 +95,13 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
+### 2 Frontend
 
+```bash
 npm install
 npm run dev
+```
 
 ➡️ When running locally, the application successfully connects to PostgreSQL and displays live data across:
 
@@ -125,7 +110,7 @@ Appointments
 Queue Display
 Patients
 Reports
-```
+
 
 🌐 Deployment Notes (Important)
 
@@ -137,9 +122,7 @@ https://emr-seven-pi.vercel.app/
 ⚠️ Backend Limitation on Vercel
 
 Vercel primarily supports serverless Node.js functions and does not natively support long-running Python services (FastAPI) or persistent PostgreSQL connections.
-
 As a result:
-
 The FastAPI + PostgreSQL backend cannot be hosted directly on Vercel
 Live database data is not rendered in the deployed version
 All backend logic and database functionality has been fully verified locally
