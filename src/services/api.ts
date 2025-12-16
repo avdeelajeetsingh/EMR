@@ -1,60 +1,107 @@
-import { Appointment, AppointmentStatus } from "@/types/appointment";
 
-/**
- * In-memory mock DB (Vercel-safe)
- */
-let MOCK_APPOINTMENTS: Appointment[] = [
-  {
-    id: "A001",
-    name: "Rahul Mehta",
-    doctorName: "Dr. Sharma",
-    date: "2025-12-20",
-    time: "10:30",
-    duration: 30,
-    status: "Confirmed",
-    mode: "In-Person",
-    reason: "Routine checkup",
-  },
-  {
-    id: "A002",
-    name: "Anita Singh",
-    doctorName: "Dr. Verma",
-    date: "2025-12-21",
-    time: "14:00",
-    duration: 45,
-    status: "Scheduled",
-    mode: "Video",
-    reason: "Follow-up",
-  },
-];
+// Vercel Serverless API (same-origin)
+const API_BASE = "";
 
-export async function getAllAppointments(): Promise<Appointment[]> {
-  await new Promise((r) => setTimeout(r, 300));
-  return [...MOCK_APPOINTMENTS];
-}
+type AppointmentPayload = {
+  patient_name: string;
+  doctor_name: string;
+  time_slot: string;
+  status: string;
+};
 
-export async function createAppointment(
-  data: Omit<Appointment, "id">
-) {
-  await new Promise((r) => setTimeout(r, 300));
+// ================= APPOINTMENTS =================
 
-  MOCK_APPOINTMENTS.push({
-    id: crypto.randomUUID(),
-    ...data,
+export async function createAppointment(data: AppointmentPayload) {
+  const res = await fetch(`${API_BASE}/api/appointments`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });
 
-  return { success: true };
+  if (!res.ok) throw new Error("Failed to create appointment");
+  return res.json();
 }
 
-export async function updateStatus(
-  id: string,
-  status: AppointmentStatus
-) {
-  await new Promise((r) => setTimeout(r, 300));
-
-  MOCK_APPOINTMENTS = MOCK_APPOINTMENTS.map((a) =>
-    a.id === id ? { ...a, status } : a
+export async function getAppointments(doctor: string, date: string) {
+  const res = await fetch(
+    `${API_BASE}/api/appointments?doctor=${encodeURIComponent(
+      doctor
+    )}&date=${date}`
   );
 
-  return { success: true };
+  if (!res.ok) throw new Error("Failed to fetch appointments");
+  return res.json();
+}
+
+export async function getAllAppointments() {
+  const res = await fetch(`${API_BASE}/api/appointments`);
+  if (!res.ok) throw new Error("Failed to fetch all appointments");
+  return res.json();
+}
+
+export async function updateStatus(id: string, status: string) {
+  const res = await fetch(`${API_BASE}/api/appointments/${id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!res.ok) throw new Error("Failed to update status");
+}
+
+// ================= PATIENTS =================
+
+export async function getPatients() {
+  const res = await fetch(`${API_BASE}/api/patients`);
+  if (!res.ok) throw new Error("Failed to fetch patients");
+  return res.json();
+}
+
+export async function getPatientDetails(name: string) {
+  const res = await fetch(
+    `${API_BASE}/api/patients/${encodeURIComponent(name)}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch patient details");
+  return res.json();
+}
+
+// ================= REPORTS =================
+
+export async function getDailyReport(date: string) {
+  const res = await fetch(`${API_BASE}/api/reports/daily?date=${date}`);
+  return res.json();
+}
+
+export async function getWeeklyReport(startDate: string) {
+  const res = await fetch(
+    `${API_BASE}/api/reports/weekly?start_date=${startDate}`
+  );
+  return res.json();
+}
+
+export async function getDoctorWorkload() {
+  const res = await fetch(`${API_BASE}/api/reports/doctor-workload`);
+  return res.json();
+}
+
+export async function getCancellationReport() {
+  const res = await fetch(`${API_BASE}/api/reports/cancellations`);
+  return res.json();
+}
+
+// ================= SETTINGS =================
+
+export async function getSettings() {
+  const res = await fetch(`${API_BASE}/api/settings`);
+  return res.json();
+}
+
+export async function updateSettings(data: any) {
+  const res = await fetch(`${API_BASE}/api/settings`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
 }
