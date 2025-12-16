@@ -1,78 +1,56 @@
-import { pool } from "./_db.js";
-import { randomUUID } from "crypto";
+// api/appointments.js
 
-export default async function handler(req, res) {
-  try {
-    // ================= GET =================
-    if (req.method === "GET") {
-      const result = await pool.query(`
-        SELECT
-          id,
-          name,
-          doctor_name AS "doctor_name",
-          date::text AS date,
-          time,
-          duration,
-          status,
-          mode,
-          reason
-        FROM appointments
-        ORDER BY date, time
-      `);
+const MOCK_APPOINTMENTS = [
+  {
+    id: "A001",
+    name: "Rahul Mehta",
+    doctor_name: "Dr. Sharma",
+    date: "2025-12-20",
+    time: "10:30",
+    duration: 30,
+    status: "Confirmed",
+    mode: "In-Person",
+    reason: "Routine checkup",
+  },
+  {
+    id: "A002",
+    name: "Anita Singh",
+    doctor_name: "Dr. Verma",
+    date: "2025-12-20",
+    time: "14:00",
+    duration: 45,
+    status: "Scheduled",
+    mode: "Video",
+    reason: "Follow-up",
+  },
+  {
+    id: "A003",
+    name: "Karan Patel",
+    doctor_name: "Dr. Sharma",
+    date: "2025-12-21",
+    time: "09:15",
+    duration: 20,
+    status: "Upcoming",
+    mode: "Phone",
+    reason: "Consultation",
+  },
+];
 
-      return res.status(200).json(result.rows);
-    }
-
-    // ================= POST =================
-    if (req.method === "POST") {
-      const {
-        name,
-        doctorName,   // frontend sends this
-        date,
-        time,
-        duration,
-        status,
-        mode,
-        reason,
-      } = req.body;
-
-      const result = await pool.query(
-        `
-        INSERT INTO appointments
-          (id, name, doctor_name, date, time, duration, status, mode, reason)
-        VALUES
-          ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-        RETURNING
-          id,
-          name,
-          doctor_name AS "doctor_name",
-          date::text AS date,
-          time,
-          duration,
-          status,
-          mode,
-          reason
-        `,
-        [
-          randomUUID(),
-          name,
-          doctorName,
-          date,
-          time,
-          duration,
-          status,
-          mode,
-          reason,
-        ]
-      );
-
-      // 🔥 RETURN CREATED ROW (important)
-      return res.status(201).json(result.rows[0]);
-    }
-
-    return res.status(405).json({ error: "Method not allowed" });
-  } catch (err) {
-    console.error("Appointments API error:", err);
-    return res.status(500).json({ error: "Database error" });
+export default function handler(req, res) {
+  if (req.method === "GET") {
+    return res.status(200).json(MOCK_APPOINTMENTS);
   }
+
+  if (req.method === "POST") {
+    const newAppointment = {
+      id: "A" + Math.floor(Math.random() * 10000),
+      ...req.body,
+    };
+
+    MOCK_APPOINTMENTS.push(newAppointment);
+
+    return res.status(201).json(newAppointment);
+  }
+
+  res.status(405).json({ error: "Method not allowed" });
 }
