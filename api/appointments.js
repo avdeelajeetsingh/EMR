@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         id,
         name,
         doctor_name AS "doctorName",
-        date,
+        TO_CHAR(date, 'YYYY-MM-DD') AS date,
         TO_CHAR(time, 'HH24:MI') AS time,
         duration,
         status,
