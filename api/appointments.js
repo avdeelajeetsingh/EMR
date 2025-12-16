@@ -1,28 +1,31 @@
-export default function handler(req, res) {
-  const appointments = [
-    {
-      id: "A001",
-      name: "Rahul Mehta",
-      doctorName: "Dr. Sharma",
-      date: "2025-12-20",
-      time: "10:30",
-      duration: 30,
-      status: "Confirmed",
-      mode: "In-Person",
-      reason: "Routine checkup",
-    },
-    {
-      id: "A002",
-      name: "Anita Singh",
-      doctorName: "Dr. Verma",
-      date: "2025-12-21",
-      time: "14:00",
-      duration: 45,
-      status: "Scheduled",
-      mode: "Video",
-      reason: "Follow-up",
-    },
-  ];
+import pkg from "pg";
+const { Pool } = pkg;
 
-  res.status(200).json(appointments);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
+export default async function handler(req, res) {
+  try {
+    const result = await pool.query(`
+      SELECT
+        id,
+        name,
+        doctor_name AS "doctorName",
+        date,
+        TO_CHAR(time, 'HH24:MI') AS time,
+        duration,
+        status,
+        mode,
+        reason
+      FROM appointments
+      ORDER BY date, time
+    `);
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.status(500).json({ error: "Database connection failed" });
+  }
 }
