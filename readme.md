@@ -2,8 +2,6 @@
 
 A full-stack **Electronic Medical Records (EMR) and Appointment Management System** designed to manage patient records, appointment scheduling, live queue display, dashboards, and report generation.
 
-This project was developed as part of a **technical assessment**, with a strong focus on clean architecture, modular frontend design, and database-driven backend logic.
-
 ---
 
 ## 🚀 Features
@@ -39,27 +37,6 @@ This project was developed as part of a **technical assessment**, with a strong 
 
 ## 🗂 Project Structure
 
-# 🏥 EMR & Appointment Management System
-
-A full-stack **Electronic Medical Records (EMR) and Appointment Management System** designed to manage patient records, appointment scheduling, live queue display, dashboards, and report generation.
-
-This project was developed as part of a **technical assessment**, with a strong focus on clean architecture, modular frontend design, and database-driven backend logic.
-
----
-
-## 🚀 Features
-
-- 📅 Appointment Scheduling & Management
-- 🧑‍⚕️ Patient Records Management
-- ⏱ Live Queue Display
-- 📊 Analytics Dashboard (appointments, status, modes, doctors)
-- 📄 Report Generation (daily, weekly, workload, cancellations)
-- 🎨 Modern UI with Tailwind CSS
-- ⚡ Real-time UI state updates
-
----
-
-## 🗂 Project Structure
 ```
 EMR-MAIN/
 ├── api/ # Vercel serverless API routes (Node.js)
