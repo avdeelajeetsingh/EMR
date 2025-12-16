@@ -91,7 +91,7 @@ Reports
 
 🌐 Deployment Notes (Important)
 
-The project frontend is deployed on Vercel to meet the assessment requirement:
+The project frontend is deployed on Vercel:
 
 🔗 Live URL:
 https://emr-seven-pi.vercel.app/
